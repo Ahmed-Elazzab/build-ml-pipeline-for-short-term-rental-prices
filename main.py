@@ -27,23 +27,32 @@ def go(config: DictConfig):
     active_steps = steps_par.split(",") if steps_par != "all" else _steps
 
     with tempfile.TemporaryDirectory() as tmp_dir:
+        #download step
         if "download" in active_steps:
             _ = mlflow.run(
                 f"{config['main']['components_repository']}/get_data",
                 "main",
                 parameters={
                     "sample": config["etl"]["sample"],
-                    "artifact_name": "sample1.csv",
+                    "artifact_name": "sample.csv",
                     "artifact_type": "raw_data",
                     "artifact_description": "Raw file as downloaded"
                 },
             )
-
+        #basic cleaning step
         if "basic_cleaning" in active_steps:
-            ##################
-            # Implement here #
-            ##################
-            pass
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "basic_cleaning"),
+                "main",
+                parameters={
+                "input_artifact": "sample.csv:latest",
+                "output_artifact": "clean_sample.csv",
+                "output_type": "clean_sample",
+                "output_description": "Data with outliers and null values removed",
+                "min_price": config['etl']['min_price'],
+                "max_price": config['etl']['max_price']
+                },
+            )
 
         if "data_check" in active_steps:
             ##################
