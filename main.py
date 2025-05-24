@@ -1,3 +1,6 @@
+"""
+This script orchestrates the entire MLOps pipeline for the Airbnb price prediction project.
+"""
 import json
 import mlflow
 import tempfile
@@ -15,8 +18,11 @@ _steps = [
 ]
 
 @hydra.main(config_name='config', version_base='1.3')
-
 def go(config: DictConfig):
+    """
+    Executes the MLOps pipeline based on the provided configuration.
+    It runs specified steps sequentially, logging artifacts and metrics.
+    """
     os.environ["WANDB_PROJECT"] = config["main"]["project_name"]
     os.environ["WANDB_RUN_GROUP"] = config["main"]["experiment_name"]
     
@@ -103,7 +109,7 @@ def go(config: DictConfig):
             )            
 
         if "test_regression_model" in active_steps:
-             _ = mlflow.run(
+            _ = mlflow.run(
                     f"{config['main']['components_repository']}/test_regression_model",
                     "main",
                     parameters={

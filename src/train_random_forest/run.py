@@ -41,7 +41,7 @@ logger = logging.getLogger()
 
 
 def go(args):
-
+    """Trains a Random Forest model, logs metrics, and exports the model as a W&B artifact."""
     run = wandb.init(job_type="train_random_forest")
     run.config.update(args)
 
@@ -121,12 +121,13 @@ def go(args):
 
     run.log(
         {
-          "feature_importance": wandb.Image(fig_feat_imp),
+            "feature_importance": wandb.Image(fig_feat_imp),
         }
     )
 
 
 def plot_feature_importance(pipe, feat_names):
+    """Plots and returns a matplotlib figure of feature importances from the trained pipeline."""
     # We collect the feature importance for all non-nlp features first
     feat_imp = pipe["random_forest"].feature_importances_[: len(feat_names)-1]
     # For the NLP feature we sum across all the TF-IDF dimensions into a global
@@ -143,6 +144,7 @@ def plot_feature_importance(pipe, feat_names):
 
 
 def get_inference_pipeline(rf_config, max_tfidf_features):
+    """Builds and returns a scikit-learn pipeline for data preprocessing and Random Forest inference."""
     ordinal_categorical = ["room_type"]
     non_ordinal_categorical = ["neighbourhood_group"]
     
