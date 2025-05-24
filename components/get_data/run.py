@@ -15,6 +15,17 @@ logger = logging.getLogger()
 
 
 def go(args):
+    """
+    Downloads a sample file and logs it as an artifact to Weights & Biases.
+
+    Args:
+        args (argparse.Namespace): A namespace containing the command-line arguments.
+            Expected arguments:
+            - sample (str): The name of the sample to download.
+            - artifact_name (str): The name for the output artifact.
+            - artifact_type (str): The type of the output artifact.
+            - artifact_description (str): A brief description of the artifact.
+    """
 
     run = wandb.init(job_type="download_file")
     run.config.update(args)

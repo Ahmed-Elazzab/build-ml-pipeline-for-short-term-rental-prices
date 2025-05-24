@@ -17,6 +17,14 @@ logger = logging.getLogger()
 
 
 def go(args):
+    """
+    Tests the best model (tagged with "prod") against the test dataset.
+    Args:
+        args (argparse.Namespace): A namespace containing the command-line arguments.
+            Expected arguments:
+            - mlflow_model (str): The name or path of the MLflow model artifact.
+            - test_dataset (str): The name or path of the test dataset artifact.
+    """
 
     run = wandb.init(job_type="test_model")
     run.config.update(args)
