@@ -17,22 +17,36 @@ _steps = [
     "test_regression_model"
 ]
 
-@hydra.main(config_name='config', version_base='1.3')
+# This automatically reads in the configuration
+@hydra.main(config_name='config', config_path='.') # for newer hydra version add: , config_path='.', version_base='1.3')
 def go(config: DictConfig):
-    """
-    Executes the MLOps pipeline based on the provided configuration.
-    It runs specified steps sequentially, logging artifacts and metrics.
-    """
+    '''
+    Triggers the MLflow pipeline run and its associated steps.
+    The W&B experiment login together with its logging is configured.
+    
+    input:
+        config: configuration file for ML training and testing
+        
+    output:
+        None
+    '''
+
+    # Setup the wandb experiment. All runs will be grouped under this name
     os.environ["WANDB_PROJECT"] = config["main"]["project_name"]
     os.environ["WANDB_RUN_GROUP"] = config["main"]["experiment_name"]
     
+    # Get the path of the MLflow project root
     root_path = hydra.utils.get_original_cwd()
+
+    # Steps to execute
     steps_par = config['main']['steps']
     active_steps = steps_par.split(",") if steps_par != "all" else _steps
 
+    # Move to a temporary directory
     with tempfile.TemporaryDirectory() as tmp_dir:
-        #download step
+
         if "download" in active_steps:
+            # Download file and load in W&B
             _ = mlflow.run(
                 f"{config['main']['components_repository']}/get_data",
                 "main",
