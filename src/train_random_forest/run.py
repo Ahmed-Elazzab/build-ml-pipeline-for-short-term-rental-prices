@@ -89,6 +89,10 @@ def go(args):
 
     logger.info("Exporting model")
 
+    # Ensure all object columns in X_val are converted to string for MLflow signature
+    for col in X_val.select_dtypes(include=['object']).columns:
+        X_val[col] = X_val[col].astype(str)
+
     # Save model package in the MLFlow sklearn format
     if os.path.exists("random_forest_dir"):
         shutil.rmtree("random_forest_dir")

@@ -18,7 +18,7 @@ modeling:
   val_size: 0.2
   # Fix this for reproducibility, change to have new splits
   random_seed: 42
-  output_artifact: "random_forest_export:latest"
+  output_artifact: "trained_random_forest_regression"
   # Column to use for stratification (use "none" for no stratification)
   stratify_by: "neighbourhood_group"
   # Maximum number of features to consider for the TFIDF applied to the title of the
