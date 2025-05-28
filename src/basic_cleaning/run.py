@@ -40,14 +40,20 @@ def go(args):
     idx = df_clean['longitude'].between(-74.25, -73.50) & df_clean['latitude'].between(40.5, 41.2)
     df_clean = df_clean[idx].copy()
 
-    # --- ADD THESE LINES FOR DEBUGGING ---
-    logger.info(f"Number of rows before geo cleaning: {len(df_clean)}")
-    logger.info(f"Number of rows to drop due to geo: {np.sum(~idx)}")
-    # ------------------------------------
+    idx = df_clean[
+        ~(
+            df_clean['longitude'].between(-74.25, -73.50) &
+            df_clean['latitude'].between(40.5, 41.2)
+        )
+    ]
+    if not idx.empty:
+        logger.error("Rows STILL out of bounds after all filtering, will be dropped before saving:")
+        logger.error("\n%s", idx.to_string())
+        print("Rows STILL out of bounds after all filtering, will be dropped before saving:")
+        print(idx.to_string())
+        # Drop them
+        df_clean = df_clean.drop(idx.index)
 
-    df_clean = df_clean[idx].copy()
-    logger.info(f"Number of rows after geo cleaning: {len(df_clean)}")
-    
     # save cleaned dataframe
     logger.info(f'Save cleaned dataframe to {args.output_artifact_name}')
     df_clean.to_csv(args.output_artifact_name, index=False)
