@@ -39,6 +39,14 @@ def go(args):
     logger.info('Drop rows in the dataset that are not in the proper geolocation')
     idx = df_clean['longitude'].between(-74.25, -73.50) & df_clean['latitude'].between(40.5, 41.2)
     df_clean = df_clean[idx].copy()
+
+    # --- ADD THESE LINES FOR DEBUGGING ---
+    logger.info(f"Number of rows before geo cleaning: {len(df_clean)}")
+    logger.info(f"Number of rows to drop due to geo: {np.sum(~idx)}")
+    # ------------------------------------
+
+    df_clean = df_clean[idx].copy()
+    logger.info(f"Number of rows after geo cleaning: {len(df_clean)}")
     
     # save cleaned dataframe
     logger.info(f'Save cleaned dataframe to {args.output_artifact_name}')

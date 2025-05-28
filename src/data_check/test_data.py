@@ -44,11 +44,10 @@ def test_neighborhood_names(data):
     assert set(known_names) == set(neigh)
 
 
-# def test_proper_boundaries(data: pd.DataFrame):
-#     """Tests proper longitude and latitude boundaries for properties in and around NYC."""
-#     idx = data['longitude'].between(-74.25, -73.50) & data['latitude'].between(40.5, 41.2)
-
-#     assert np.sum(~idx) == 0
+def test_proper_boundaries(data: pd.DataFrame):
+    """Tests proper longitude and latitude boundaries for properties in and around NYC."""
+    idx = data['longitude'].between(-74.25, -73.50) & data['latitude'].between(40.5, 41.2)
+    assert np.sum(~idx) == 0
 
 def test_similar_neigh_distrib(data: pd.DataFrame, ref_data: pd.DataFrame, kl_threshold: float):
     """Compares the 'neighbourhood_group' distribution in new data to a reference using KL divergence."""
